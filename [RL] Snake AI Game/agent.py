@@ -1,13 +1,19 @@
 import gameAI
+import pygame
+import numpy as np
+import os
 
-env = gameAI()
+env = gameAI.SnakeGameAI()
+# GAME CONFIGURATION
+BLOCK_SIZE = 20
+
 # CREATING Q-TABLE
-possible_x = (env.w - env.BLOCK_SIZE) // env.BLOCK_SIZE
-possible_y = (env.h - env.BLOCK_SIZE) // env.BLOCK_SIZE
-q_table = np.zeros((possible_x*possible_y), 3)
+possible_x = (env.w - BLOCK_SIZE) // BLOCK_SIZE
+possible_y = (env.h - BLOCK_SIZE) // BLOCK_SIZE
+q_table = np.zeros((possible_x*possible_y, 3))
 
 # DEFINE IMPORTANT VARIABLES
-num_episodes = 10000
+num_episodes = 1000
 max_steps_per_episode = 100
 
 learning_rate = 0.1
@@ -26,31 +32,30 @@ rewards_all_episodes = list()
 print("TRAINING...")
 for episode in range(num_episodes):
   state = env.reset()
-  
   done = False
   rewards_current_episode = 0
-  
 
+  os.system("cls")
+  print("EPISODE : {}".format(episode))
+  print("========= Q TABLE ========= ")
+  print(q_table)
   for step in range(max_steps_per_episode):
-    os.system("cls")
-    print("EPISODE : {}".format(episode))
-    env.render()
-    time.sleep(0.005)
-
     # Exploration - Exploitation Trade Off
-    exploration_rate_threshold = random.uniform(0, 1)
+    exploration_rate_threshold = np.random.uniform(0, 1)
     if exploration_rate_threshold > exploration_rate:
       action = np.argmax(q_table[state, :])
     else:
       action = np.random.randint(0, 3)
 
-    new_state, reward, done, info = env.step(action)    
+    new_state, reward, done, info = env.play_step(action)
 
-    # Q-LEARNING ALGORITHM
-    q_table[state, action] = (1 - learning_rate) * q_table[state, action] + learning_rate * (reward + discount_rate * np.max(q_table[new_state, :]))
+    if not(new_state >= (possible_x*possible_y)):
+      print("NEW STATE : {}".format(new_state))
+      # Q-LEARNING ALGORITHM
+      q_table[state, action] = (1 - learning_rate) * q_table[state, action] + learning_rate * (reward + discount_rate * np.max(q_table[new_state, :]))
 
-    state = new_state
-    rewards_current_episode += reward
+      state = new_state
+      rewards_current_episode += reward
 
     if done == True:
       break
@@ -67,7 +72,6 @@ for episode in range(num_episodes):
 
   rewards_all_episodes.append(rewards_current_episode)
 
-os.system("cls")
 print("TRAINING FINISHED!")
 print("Number of Episodes \t: {}".format(num_episodes))
 print("Max Steps Per Episode \t: {}".format(max_steps_per_episode))
@@ -77,10 +81,10 @@ print("\nSuccess Rate \t: {}%".format(success_percentage))
 
 
 # SAVE
-np.savetxt("q_table.csv", q_table, delimiter=",")
-print("\nMODEL SAVED!")
-
-print("\n\n Thank You!")
+# np.savetxt("q_table.csv", q_table, delimiter=",")
+# print("\nMODEL SAVED!")
+ 
+# print("\n\n Thank You!")
 
 
 """

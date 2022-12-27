@@ -23,10 +23,10 @@ BLACK = (0,0,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 5
 
 class SnakeGame:
-	def __init__(self, w=640, h=480):
+	def __init__(self, w=200, h=200):
 		self.w = w
 		self.h = h
 
@@ -35,6 +35,7 @@ class SnakeGame:
 		pygame.display.set_caption('Snake')
 		self.clock = pygame.time.Clock()
 
+		# POSSIBLE TILE
 		self.possible_x = (self.w - BLOCK_SIZE) // BLOCK_SIZE
 		self.possible_y = (self.h - BLOCK_SIZE) // BLOCK_SIZE
 
@@ -52,8 +53,8 @@ class SnakeGame:
 		self.state = (self.possible_x * self.head.y + self.head.x) / 20
 
 	def _place_food(self):
-		x = random.randint(0, (self.w-BLOCK_SIZE)//BLOCK_SIZE)*BLOCK_SIZE
-		y = random.randint(0, (self.h-BLOCK_SIZE)//BLOCK_SIZE)*BLOCK_SIZE
+		x = random.randint(0, self.possible_x)*BLOCK_SIZE
+		y = random.randint(0, self.possible_y)*BLOCK_SIZE
 		self.food = Point(x,y)
 
 		# check if the food inside the snake
@@ -80,6 +81,9 @@ class SnakeGame:
 		# MOVING
 		self._move(self.direction)
 		self.body.insert(0, self.head)
+
+		print("HEAD POINT X : {}".format(self.head.x))
+		print("HEAD POINT Y : {}".format(self.head.y))
 
 		# EAT
 		if self.head == self.food:
@@ -121,7 +125,7 @@ class SnakeGame:
 			y += BLOCK_SIZE
 
 		self.head = Point(x,y)
-		self.state = (self.possible_x * self.head.y + self.head.x) / 20
+		self.state = int((self.possible_x * self.head.y + self.head.x) / 20)
 
 	def _update_ui(self):
 		self.display.fill(BLACK)
@@ -132,7 +136,9 @@ class SnakeGame:
 		            
 		pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
 		        
-		print("STATE : {}".format(int(self.state)))
+		print("STATE : {}".format(self.state))
+		print("possible_x : {}".format(self.possible_x))
+		print("possible_y : {}".format(self.possible_y))
 
 		text = font.render("Score: " + str(self.score), True, WHITE)
 		self.display.blit(text, [0, 0])

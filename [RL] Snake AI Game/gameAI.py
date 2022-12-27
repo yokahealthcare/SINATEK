@@ -23,10 +23,17 @@ BLACK = (0,0,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 50
+
+# JUST PLAYING...
+list_of_apples = list()
+for i in range(100):
+	x = random.randint(0, 9) * BLOCK_SIZE
+	y = random.randint(0, 9) * BLOCK_SIZE
+	list_of_apples.append([x, y])
 
 class SnakeGameAI:
-	def __init__(self, w=640, h=480):
+	def __init__(self, w=200, h=200):
 		self.w = w
 		self.h = h
 
@@ -51,6 +58,7 @@ class SnakeGameAI:
 		]
 		self.score = 0
 		self.food = None
+		self.index_apple = 0
 		self._place_food()
 		self.frame_iteration = 0
 		self.state = int((self.possible_x * self.head.y + self.head.x) / 20)
@@ -58,13 +66,17 @@ class SnakeGameAI:
 
 
 	def _place_food(self):
-		x = random.randint(0, self.possible_x*BLOCK_SIZE)
-		y = random.randint(0, self.possible_y*BLOCK_SIZE)
+		#x = random.randint(0, self.possible_x) * BLOCK_SIZE
+		#y = random.randint(0, self.possible_y) * BLOCK_SIZE
+		x = list_of_apples[self.index_apple][0]
+		y = list_of_apples[self.index_apple][1]
 		self.food = Point(x,y)
 
 		# check if the food inside the snake
 		if self.food in self.body:
 			self._place_food()
+
+		self.index_apple += 1
 
 	def play_step(self, action):
 		self.frame_iteration += 1
@@ -92,13 +104,13 @@ class SnakeGameAI:
 		if self._is_collision() or self.frame_iteration > 100 * len(self.body):
 			gameOver = True
 			reward = -10
-			return reward, gameOver, self.score
+			return self.state, reward, gameOver, self.score
 
 		# UPDATE UI
 		self._update_ui()
 		self.clock.tick(SPEED)
 
-		return reward, gameOver, self.score
+		return self.state, reward, gameOver, self.score
 
 	def _is_collision(self):
 		x = self.head.x
@@ -148,7 +160,7 @@ class SnakeGameAI:
 		            
 		pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
 		
-		print("STATE : {}".format(self.state))
+		# print("STATE : {}".format(self.state))
 
 		text = font.render("Score: " + str(self.score), True, WHITE)
 		self.display.blit(text, [0, 0])
