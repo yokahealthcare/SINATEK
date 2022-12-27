@@ -10,7 +10,7 @@ BLOCK_SIZE = 20
 # CREATING Q-TABLE
 possible_x = (env.w - BLOCK_SIZE) // BLOCK_SIZE
 possible_y = (env.h - BLOCK_SIZE) // BLOCK_SIZE
-q_table = np.zeros((possible_x*possible_y, 3))
+q_table = np.zeros(((possible_x+1)*(possible_y+1), 3))
 
 # DEFINE IMPORTANT VARIABLES
 num_episodes = 1000
@@ -49,13 +49,15 @@ for episode in range(num_episodes):
 
     new_state, reward, done, info = env.play_step(action)
 
-    if not(new_state >= (possible_x*possible_y)):
-      print("NEW STATE : {}".format(new_state))
-      # Q-LEARNING ALGORITHM
-      q_table[state, action] = (1 - learning_rate) * q_table[state, action] + learning_rate * (reward + discount_rate * np.max(q_table[new_state, :]))
+    print("STATE : {}".format(state))
+    print("NEW STATE : {}".format(new_state))
+    # Q-LEARNING ALGORITHM
+    a = (1 - learning_rate) * q_table[state, action]
+    b = learning_rate * (reward + discount_rate * np.max(q_table[new_state, :]))
+    q_table[state, action] =  a + b 
 
-      state = new_state
-      rewards_current_episode += reward
+    state = new_state
+    rewards_current_episode += reward
 
     if done == True:
       break

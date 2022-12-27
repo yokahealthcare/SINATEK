@@ -23,7 +23,7 @@ BLACK = (0,0,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 5
+SPEED = 2
 
 class SnakeGame:
 	def __init__(self, w=200, h=200):
@@ -50,7 +50,7 @@ class SnakeGame:
 		self.score = 0
 		self.food = None
 		self._place_food()
-		self.state = (self.possible_x * self.head.y + self.head.x) / 20
+		self.state = int((self.possible_x * self.head.y + self.head.x) / 20)
 
 	def _place_food(self):
 		x = random.randint(0, self.possible_x)*BLOCK_SIZE
@@ -82,8 +82,8 @@ class SnakeGame:
 		self._move(self.direction)
 		self.body.insert(0, self.head)
 
-		print("HEAD POINT X : {}".format(self.head.x))
-		print("HEAD POINT Y : {}".format(self.head.y))
+		#print("HEAD.X : {}".format(self.head.x))
+		#print("HEAD.Y : {}".format(self.head.y))
 
 		# EAT
 		if self.head == self.food:
@@ -139,6 +139,10 @@ class SnakeGame:
 		print("STATE : {}".format(self.state))
 		print("possible_x : {}".format(self.possible_x))
 		print("possible_y : {}".format(self.possible_y))
+
+		print("HEAD.X : {}".format(self.head.x))
+		print("HEAD.Y : {}".format(self.head.y))
+		print("-----------------------------------")
 
 		text = font.render("Score: " + str(self.score), True, WHITE)
 		self.display.blit(text, [0, 0])
