@@ -23,14 +23,7 @@ BLACK = (0,0,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 2
-
-# JUST PLAYING...
-list_of_apples = list()
-for i in range(100):
-	x = random.randint(0, 9) * BLOCK_SIZE
-	y = random.randint(0, 9) * BLOCK_SIZE
-	list_of_apples.append([x, y])
+SPEED = 20
 
 class SnakeGameAI:
 	def __init__(self, w=200, h=200):
@@ -41,10 +34,6 @@ class SnakeGameAI:
 		self.display = pygame.display.set_mode((self.w, self.h))
 		pygame.display.set_caption('Snake Game AI')
 		self.clock = pygame.time.Clock()
-
-		# POSSIBLE TILE
-		self.possible_x = (self.w - BLOCK_SIZE) // BLOCK_SIZE
-		self.possible_y = (self.h - BLOCK_SIZE) // BLOCK_SIZE
 
 		self.reset()
 		
@@ -59,25 +48,18 @@ class SnakeGameAI:
 		]
 		self.score = 0
 		self.food = None
-		self.index_apple = 0
 		self._place_food()
 		self.frame_iteration = 0
-		self.state = int((self.possible_x * self.head.y + self.head.x) / 20)
 		
 
-
 	def _place_food(self):
-		#x = random.randint(0, self.possible_x) * BLOCK_SIZE
-		#y = random.randint(0, self.possible_y) * BLOCK_SIZE
-		x = list_of_apples[self.index_apple][0]
-		y = list_of_apples[self.index_apple][1]
+		x = random.randint(0, self.possible_x) * BLOCK_SIZE
+		y = random.randint(0, self.possible_y) * BLOCK_SIZE
 		self.food = Point(x,y)
 
 		# check if the food inside the snake
 		if self.food in self.body:
 			self._place_food()
-
-		self.index_apple += 1
 
 	def play_step(self, action):
 		self.frame_iteration += 1
@@ -105,13 +87,13 @@ class SnakeGameAI:
 		if self._is_collision() or self.frame_iteration > 100 * len(self.body):
 			gameOver = True
 			reward = -10
-			return self.state, reward, gameOver, self.score
+			return reward, gameOver, self.score
 
 		# UPDATE UI
 		self._update_ui()
 		self.clock.tick(SPEED)
 
-		return self.state, reward, gameOver, self.score
+		return reward, gameOver, self.score
 
 	def _is_collision(self):
 		x = self.head.x
@@ -122,7 +104,6 @@ class SnakeGameAI:
 		return False
 
 	def _move(self, action):
-		
 		clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
 		idx = clock_wise.index(self.direction)
 
@@ -150,8 +131,6 @@ class SnakeGameAI:
 			y += BLOCK_SIZE
 
 		self.head = Point(x,y)
-		self.state = int((self.possible_x * self.head.y + self.head.x) / 20)
-	
 
 	def _update_ui(self):
 		self.display.fill(BLACK)
@@ -161,35 +140,7 @@ class SnakeGameAI:
 			# pygame.draw.rect(self.display, RED, pygame.Rect(pt.x+4, pt.y, 12, 12))
 		            
 		pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
-		
-		print("STATE : {}".format(self.state))
 
 		text = font.render("Score: " + str(self.score), True, WHITE)
 		self.display.blit(text, [0, 0])
 		pygame.display.flip()
-
-
-if __name__ == '__main__':
-	action = 0
-	# THIS will make the SNAKE LOOPING to the RIGHT
-	
-
-	game = SnakeGameAI()
-	while True:
-		# EVENTS
-		for event in pygame.event.get():
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_RIGHT:
-					action = 1
-				if event.key == pygame.K_LEFT:
-					action = 2
-		state, reward, gameOver, score = game.play_step(action)
-		action = 0
-
-		if gameOver:
-			game.reset()
-
-	print("THANK YOU FOR PLAYING!")
-	print('Final Score : {}'.format(game.score))
-
-	pygame.quit()

@@ -8,9 +8,7 @@ env = gameAI.SnakeGameAI()
 BLOCK_SIZE = 20
 
 # CREATING Q-TABLE
-possible_x = (env.w - BLOCK_SIZE) // BLOCK_SIZE
-possible_y = (env.h - BLOCK_SIZE) // BLOCK_SIZE
-q_table = np.zeros(((possible_x+1)*(possible_y+1), 3))
+# ..............
 
 # DEFINE IMPORTANT VARIABLES
 num_episodes = 1000
@@ -35,10 +33,14 @@ for episode in range(num_episodes):
   done = False
   rewards_current_episode = 0
 
+  """
   os.system("cls")
   print("EPISODE : {}".format(episode))
   print("========= Q TABLE ========= ")
   print(q_table)
+
+  """
+
   for step in range(max_steps_per_episode):
     # Exploration - Exploitation Trade Off
     exploration_rate_threshold = np.random.uniform(0, 1)
@@ -48,13 +50,9 @@ for episode in range(num_episodes):
       action = np.random.randint(0, 3)
 
     new_state, reward, done, info = env.play_step(action)
-
-    print("STATE : {}".format(state))
-    print("NEW STATE : {}".format(new_state))
+  
     # Q-LEARNING ALGORITHM
-    a = (1 - learning_rate) * q_table[state, action]
-    b = learning_rate * (reward + discount_rate * np.max(q_table[new_state, :]))
-    q_table[state, action] =  a + b 
+    q_table[state, action] =  (1 - learning_rate) * q_table[state, action] + learning_rate * (reward + discount_rate * np.max(q_table[new_state, :]))
 
     state = new_state
     rewards_current_episode += reward

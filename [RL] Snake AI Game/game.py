@@ -23,7 +23,7 @@ BLACK = (0,0,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 2
+SPEED = 10
 
 class SnakeGame:
 	def __init__(self, w=200, h=200):
@@ -34,10 +34,6 @@ class SnakeGame:
 		self.display = pygame.display.set_mode((self.w, self.h))
 		pygame.display.set_caption('Snake')
 		self.clock = pygame.time.Clock()
-
-		# POSSIBLE TILE
-		self.possible_x = (self.w - BLOCK_SIZE) // BLOCK_SIZE
-		self.possible_y = (self.h - BLOCK_SIZE) // BLOCK_SIZE
 
 		# DEFAULT GAME STATE
 		self.direction = Direction.RIGHT
@@ -50,14 +46,13 @@ class SnakeGame:
 		self.score = 0
 		self.food = None
 		self._place_food()
-		self.state = int((self.possible_x * self.head.y + self.head.x) / 20)
 
 	def _place_food(self):
-		x = random.randint(0, self.possible_x)*BLOCK_SIZE
-		y = random.randint(0, self.possible_y)*BLOCK_SIZE
+		x = random.randint(0, (self.w-BLOCK_SIZE)//BLOCK_SIZE)*BLOCK_SIZE
+		y = random.randint(0, (self.h-BLOCK_SIZE)//BLOCK_SIZE)*BLOCK_SIZE
 		self.food = Point(x,y)
 
-		# check if the food inside the snake
+		# check if the food inside the snake, then placed new food
 		if self.food in self.body:
 			self._place_food()
 
@@ -81,9 +76,6 @@ class SnakeGame:
 		# MOVING
 		self._move(self.direction)
 		self.body.insert(0, self.head)
-
-		#print("HEAD.X : {}".format(self.head.x))
-		#print("HEAD.Y : {}".format(self.head.y))
 
 		# EAT
 		if self.head == self.food:
@@ -125,24 +117,14 @@ class SnakeGame:
 			y += BLOCK_SIZE
 
 		self.head = Point(x,y)
-		self.state = int((self.possible_x * self.head.y + self.head.x) / 20)
 
 	def _update_ui(self):
 		self.display.fill(BLACK)
 		        
 		for pt in self.body:
 			pygame.draw.rect(self.display, WHITE, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
-			# pygame.draw.rect(self.display, RED, pygame.Rect(pt.x+4, pt.y, 12, 12))
 		            
 		pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
-		        
-		print("STATE : {}".format(self.state))
-		print("possible_x : {}".format(self.possible_x))
-		print("possible_y : {}".format(self.possible_y))
-
-		print("HEAD.X : {}".format(self.head.x))
-		print("HEAD.Y : {}".format(self.head.y))
-		print("-----------------------------------")
 
 		text = font.render("Score: " + str(self.score), True, WHITE)
 		self.display.blit(text, [0, 0])
