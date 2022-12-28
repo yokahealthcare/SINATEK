@@ -8,10 +8,10 @@ env = gameAI.SnakeGameAI()
 BLOCK_SIZE = 20
 
 # CREATING Q-TABLE
-# ..............
+q_table = np.zeros((2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3))
 
 # DEFINE IMPORTANT VARIABLES
-num_episodes = 1000
+num_episodes = 10000
 max_steps_per_episode = 100
 
 learning_rate = 0.1
@@ -24,22 +24,12 @@ min_exploration_rate = 0.01
 exploration_decay_rate = 0.001
 
 # Q-TRAINING
-
 rewards_all_episodes = list()
-
 print("TRAINING...")
 for episode in range(num_episodes):
   state = env.reset()
   done = False
   rewards_current_episode = 0
-
-  """
-  os.system("cls")
-  print("EPISODE : {}".format(episode))
-  print("========= Q TABLE ========= ")
-  print(q_table)
-
-  """
 
   for step in range(max_steps_per_episode):
     # Exploration - Exploitation Trade Off
@@ -78,23 +68,5 @@ print("Max Steps Per Episode \t: {}".format(max_steps_per_episode))
 success_ratio = np.around(np.average(rewards_all_episodes), 3)
 success_percentage = np.around(success_ratio*100, 3)
 print("\nSuccess Rate \t: {}%".format(success_percentage))
-
-
-# SAVE
-# np.savetxt("q_table.csv", q_table, delimiter=",")
-# print("\nMODEL SAVED!")
- 
-# print("\n\n Thank You!")
-
-
-"""
-# GAME FINISHED - PLOT THE RESULT
-rewards_all_episodes_b1000 = np.split(np.array(rewards_all_episodes), num_episodes/1000)
-print("############ AVERAGE REWARD PER THOUSAND EPISODES ############")
-for i, v in enumerate(rewards_all_episodes_b1000):
-  print("Episodes {} : {}".format((i+1)*1000, np.average(v)))
-
-"""
-
 
 
