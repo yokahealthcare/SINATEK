@@ -6,7 +6,7 @@ from enum import Enum
 from collections import namedtuple
 
 pygame.init()
-font = pygame.font.SysFont('arial', 25)
+font = pygame.font.SysFont('Cascadia Mono', 25)
 
 class Direction(Enum):
 	RIGHT = 1
@@ -18,23 +18,29 @@ Point = namedtuple('Point', 'x, y')
 
 # COLORS
 WHITE = (255, 255, 255)
-RED = (200,0,0)
+RED = (255,0,0)
 BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
-BLACK = (0,0,0)
+BLACK = (37, 37, 37)
+DARK_GREEN = (26, 77, 46)
+ORANGE = (255, 159, 41)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 20
 
 class SnakeGameAI:
-	def __init__(self, w=200, h=200):
+	def __init__(self, w=200, h=200, isDisplayed=False):
 		self.w = w
 		self.h = h
+		self.isDisplayed = isDisplayed
+		self.gen = None
 
 		# INITILAZATION
-		self.display = pygame.display.set_mode((self.w, self.h))
-		pygame.display.set_caption('Snake Game AI')
+		self.SPEED = 70
+		if self.isDisplayed:
+			self.display = pygame.display.set_mode((self.w, self.h))
+			pygame.display.set_caption('Snake Game AI')
+			self.SPEED = 25
 		self.clock = pygame.time.Clock()
 
 		self.reset()
@@ -51,12 +57,11 @@ class SnakeGameAI:
 		self.score = 0
 		self.food = None
 		self._place_food()
-		self.frame_iteration = 0
 		
 
 	def _place_food(self):
-		x = random.randint(0, self.possible_x) * BLOCK_SIZE
-		y = random.randint(0, self.possible_y) * BLOCK_SIZE
+		x = random.randint(0, (self.w-BLOCK_SIZE)//BLOCK_SIZE) * BLOCK_SIZE
+		y = random.randint(0, (self.h-BLOCK_SIZE)//BLOCK_SIZE) * BLOCK_SIZE
 		self.food = Point(x,y)
 
 		# check if the food inside the snake
@@ -64,7 +69,6 @@ class SnakeGameAI:
 			self._place_food()
 
 	def play_step(self, action):
-		self.frame_iteration += 1
 		gameOver = False
 		reward = 0 				# DEFAULT REWARD IF NOTHING HAPPEN
 
@@ -86,16 +90,16 @@ class SnakeGameAI:
 			self.body.pop()
 
 		# COLLISION
-		if self._is_collision() or self.frame_iteration > 100 * len(self.body):
+		if self._is_collision():
 			gameOver = True
 			reward = -10
-			return reward, gameOver, self.score
+			return self.get_state(), reward, gameOver, self.score
 
 		# UPDATE UI
 		self._update_ui()
-		self.clock.tick(SPEED)
+		self.clock.tick(self.SPEED)
 
-		return reward, gameOver, self.score
+		return self.get_state(), reward, gameOver, self.score
 
 	def _is_collision(self, p=None):
 		if p == None:
@@ -206,7 +210,13 @@ class SnakeGameAI:
 	        self.food.y > self.head.y  # food down
 		]
 
-		return np.array(states, dtype=int)
+		# Returned Boolean Tuple. ex. (False, True, False, ...)
+		boolean_tuple = tuple(states)
+
+		# We need to converted to Integer Tuple
+		integer_tuple = tuple([i*1 for i in boolean_tuple])
+
+		return integer_tuple			 
 
 	def show_debug_states(self, states):
 		os.system("cls")
@@ -219,14 +229,24 @@ class SnakeGameAI:
 		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[7], states[8], states[9], states[10]))
 
 	def _update_ui(self):
-		self.display.fill(BLACK)
-		        
-		for pt in self.body:
-			pygame.draw.rect(self.display, WHITE, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
-			# pygame.draw.rect(self.display, RED, pygame.Rect(pt.x+4, pt.y, 12, 12))
-		            
-		pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+		if self.isDisplayed:
+			self.display.fill(BLACK)
+			        
+			for inx, pt in enumerate(self.body):
+				if inx == 0:
+					# HEAD
+					pygame.draw.rect(self.display, WHITE, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+				else:
+					# BODY
+					pygame.draw.rect(self.display, WHITE, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+					#pygame.draw.rect(self.display, WHITE, pygame.Rect(pt.x+0.5, pt.y+0.5, BLOCK_SIZE-0.5, BLOCK_SIZE-0.5))
+			            
+			pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
 
-		text = font.render("Score: " + str(self.score), True, WHITE)
-		self.display.blit(text, [0, 0])
-		pygame.display.flip()
+			text = font.render("Score: " + str(self.score), True, WHITE)
+			self.display.blit(text, [0, 30])
+
+			text = font.render("Gen: " + str(self.gen), True, WHITE)
+			self.display.blit(text, [0, 0])
+
+			pygame.display.flip()
