@@ -6,32 +6,38 @@ import win32api, win32con
 import cv2
 
 """
+COORDINATE
 Piano Tiles 2 - ONLINE
-
 Title 1 : (425, 600)
 Title 2 : (557, 600)
 Title 3 : (680, 600)
 Title 4 : (810, 600)
 
+Piano Tiles 2 - Android
+Title 1 : (51, 350): (172, 350)
+Title 2 
+Title 3 : (283, 350)
+Title 4 : (407, 350)
+
 """
-y_global = 350
-x_title1 = 51
-x_title2 = 172
-x_title3 = 283
-x_title4 = 407
+y_global = 440
+tiles = [51, 172, 283, 407]
+
 def click(x, y):
 	win32api.SetCursorPos((x, y))
 	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-	time.sleep(0.01)
-	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-
+	
 while keyboard.is_pressed('q') == False:
+	for x in tiles:
+		tile_changing = False
+		while tile_changing == False:
+			color_pixel = gui.pixel(x, y_global)
 
-	if gui.pixel(x_title1, y_global)[0] == 0:
-		click(x_title1, y_global)
-	if gui.pixel(x_title2, y_global)[0] == 0:
-		click(x_title2, y_global)
-	if gui.pixel(x_title3, y_global)[0] == 0:
-		click(x_title3, y_global)
-	if gui.pixel(x_title4, y_global)[0] == 0:
-		click(x_title4, y_global)
+			if color_pixel[0] < 100:
+				click(x, y_global)
+			else:
+				tile_changing = True
+				win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+
+			if keyboard.is_pressed('q'):
+				exit()
