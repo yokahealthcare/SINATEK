@@ -1,0 +1,52 @@
+TUTORIAL PAGE - GeeksforGeeks.org
+
+1. Header - SIDE BAR (contain: list of courses
+2. Difficulty Level : xxx (easy)
+3. Last Updated : 28 Oct 2022
+4. TAB
+	- READ
+	- DISCUSS
+	- COURSES
+	- PRACTICE
+	- VIDEO
+5. Brief Explanation
+6. EXAMPLE (INPUT, OUTPUT) - USING CODE EDITOR
+	- Simple Example
+	- OPERATIONS
+		1. APPENDING OPERATION
+			- .append()
+			- .appendleft()
+		2. ...
+
+NOTE: EXPLAIN EACH OPERATION BEFORE / AFTER OPERATIONS
+
+7. Video
+8. Like (need login)
+9. Previous and Next
+10. Article Contributed By : GoCode
+11. Improve Article
+12. Report Issue (go to email)
+
+
+
+
+TUTORIAL PAGE - Tutorials Point
+1. LOGO Programming language (SIDEBAR)
+
+
+
+BOTH LAYOUT
+1. SIDE BAR
+2. MIDDLE CONTENT
+3. ADS
+
+
+
+
+
+
+
+
+
+
+

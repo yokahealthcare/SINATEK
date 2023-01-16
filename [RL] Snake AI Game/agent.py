@@ -5,9 +5,6 @@ import os
 import time
 import pickle
 
-# GAME CONFIGURATION
-BLOCK_SIZE = 20
-
 # DEFINE IMPORTANT VARIABLES
 num_episodes = 10000
 max_steps_per_episode = 100000
@@ -108,7 +105,7 @@ elif inpt == 2:
     exploration_rate = min_exploration_rate + (max_exploration_rate-min_exploration_rate) * np.exp(-exploration_decay_rate*episode)
     rewards_all_episodes.append(rewards_current_episode)
     scores_all_episodes.append(score_current_episode)
-    
+
     # PLOT AVG
     if episode % batch_size == 0 and episode != 0:
       success_ratio = np.around(sum(rewards_all_episodes[elapsed*batch_size:episode])/len(rewards_all_episodes), 3)

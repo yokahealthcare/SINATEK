@@ -1,0 +1,167 @@
+----------------------- PyTorch
+(gcolab) C:\Users\User\Documents\SINATEK\[DRL] Snake AI Game>python agent.py
+2023-01-12 18:05:14.078526: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'cudart64_110.dll'; dlerror: cudart64_110.dll not found
+2023-01-12 18:05:14.078683: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+pygame 2.1.2 (SDL 2.0.18, Python 3.8.2)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+EPISODE : 1
+Current State : [0. 0. 0. 0. 1. 0. 0. 0. 1. 1. 0.]
+Action : 1
+Next State : [0. 0. 0. 0. 0. 0. 1. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 1
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 1
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 0. 0. 0. 1. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 0. 1. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 1
+Next State : [0. 0. 0. 0. 1. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 1
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 1
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 0. 0. 0. 1. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 1
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 1
+Next State : [0. 0. 0. 0. 0. 1. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 2
+Next State : [0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [1. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : 0
+Game Over : False
+Score : 0
+
+Action : 0
+Next State : [1. 1. 1. 1. 0. 0. 0. 0. 1. 1. 0.]
+Reward : -10
+Game Over : True
+Score : 0
+
+C:\Users\User\Documents\SINATEK\[DRL] Snake AI Game\Dqn.py:54: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\torch\csrc\utils\tensor_new.cpp:233.)
+  state = torch.tensor(state, dtype=torch.float)
+Game : 1; Score : 0
