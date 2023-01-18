@@ -160,10 +160,12 @@ class SnakeGameAI:
 	Eat Food        : +10
 	Game Over       : -10
 	Else            : 0
-	-------------------- STATE (11 values)
+	-------------------- STATE (15 values)
+	
 	[
 	    danger straight, danger right, danger left,
-	    danger left corner, danger right corner,
+	    danger front left corner, danger front right corner,
+	    danget back left corner, danger back right corner,
 	    
 	    direction left, direction right,
 	    direction up, direction down,
@@ -223,6 +225,18 @@ class SnakeGameAI:
 			(dir_d and self._is_collision(coll_lcd)) or
 			(dir_l and self._is_collision(coll_lcu))),
 
+			# BACK LEFT CORNER
+			((dir_u and self._is_collision(coll_lcd)) or
+			(dir_r and self._is_collision(coll_lcu)) or
+			(dir_d and self._is_collision(coll_rcu)) or
+			(dir_l and self._is_collision(coll_rcd))),
+
+			# BACK RIGHT CORNER
+			((dir_u and self._is_collision(coll_rcd)) or
+			(dir_r and self._is_collision(coll_lcd)) or
+			(dir_d and self._is_collision(coll_lcu)) or
+			(dir_l and self._is_collision(coll_rcu))),
+
 			dir_l,
 			dir_r,
 			dir_u,
@@ -253,11 +267,11 @@ class SnakeGameAI:
 		os.system("cls")
 		print("======== STATES ============ ")
 		print("-- DANGER")
-		print("STRAIGHT : {}\tRIGHT : {}\tLEFT : {}\tL.CORNER : {}\tR.CORNER :{}".format(states[0], states[1], states[2], states[3], states[4]))
+		print("STRAIGHT : {}\tRIGHT : {}\tLEFT : {}\nLF.CORNER : {}\tRF.CORNER :{}\tLD.CORNER : {}\tRD.CORNER :{}".format(states[0], states[1], states[2], states[3], states[4], states[5], states[6]))
 		print("-- DIRECTION")
-		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[5], states[6], states[7], states[8]))
+		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[7], states[8], states[9], states[10]))
 		print("-- FOOD")
-		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[9], states[10], states[11], states[12]))
+		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[11], states[12], states[13], states[14]))
 
 	def _update_ui(self):
 		if self.isDisplayed:

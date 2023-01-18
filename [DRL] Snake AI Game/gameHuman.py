@@ -1,4 +1,5 @@
 import pygame
+from pygame import gfxdraw
 import random
 import numpy as np
 import os
@@ -23,10 +24,11 @@ RED = (200,0,0)
 BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
+GREEN = (0,255,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 6
 
 class SnakeGame:
 	def __init__(self, w=400, h=400):
@@ -136,12 +138,11 @@ class SnakeGame:
 	Eat Food        : +10
 	Game Over       : -10
 	Else            : 0
-	-------------------- STATE (11 values)
+	-------------------- STATE (15 values)
 	[
 	    danger straight, danger right, danger left,
-	    danger left corner, danger right corner,
-
-	    distance straight, distance right, distance left,
+	    danger front left corner, danger front right corner,
+	    danget back left corner, danger back right corner,
 	    
 	    direction left, direction right,
 	    direction up, direction down,
@@ -151,7 +152,7 @@ class SnakeGame:
 	]
 
 	"""
-	
+
 	def get_state(self):
 		coll_l = Point(self.head.x-BLOCK_SIZE, self.head.y)
 		coll_r = Point(self.head.x+BLOCK_SIZE, self.head.y)	
@@ -190,19 +191,29 @@ class SnakeGame:
 			(dir_d and self._is_collision(coll_r)) or
 			(dir_l and self._is_collision(coll_d))),
 
-			# LEFT CORNER
+			# FRONT LEFT CORNER
 			((dir_u and self._is_collision(coll_lcu)) or
 			(dir_r and self._is_collision(coll_rcu)) or
 			(dir_d and self._is_collision(coll_rcd)) or
 			(dir_l and self._is_collision(coll_lcd))),
 
-			# RIGHT CORNER
+			# FRONT RIGHT CORNER
 			((dir_u and self._is_collision(coll_rcu)) or
 			(dir_r and self._is_collision(coll_rcd)) or
 			(dir_d and self._is_collision(coll_lcd)) or
 			(dir_l and self._is_collision(coll_lcu))),
 
-			
+			# BACK LEFT CORNER
+			((dir_u and self._is_collision(coll_lcd)) or
+			(dir_r and self._is_collision(coll_lcu)) or
+			(dir_d and self._is_collision(coll_rcu)) or
+			(dir_l and self._is_collision(coll_rcd))),
+
+			# BACK RIGHT CORNER
+			((dir_u and self._is_collision(coll_rcd)) or
+			(dir_r and self._is_collision(coll_lcd)) or
+			(dir_d and self._is_collision(coll_lcu)) or
+			(dir_l and self._is_collision(coll_rcu))),
 
 			dir_l,
 			dir_r,
@@ -213,7 +224,59 @@ class SnakeGame:
 	        self.food.x > self.head.x,  # food right
 	        self.food.y < self.head.y,  # food up
 	        self.food.y > self.head.y  # food down
-		]
+		]	
+
+		# PROJECT SUSPENDED : DISTANCE 
+		"""
+		dist_to_wall_u = int(self.head.y / BLOCK_SIZE)
+		dist_to_wall_d = int((self.h-self.head.y-BLOCK_SIZE) / BLOCK_SIZE)
+		dist_to_wall_l = int(self.head.x / BLOCK_SIZE)
+		dist_to_wall_r = int((self.w-self.head.x-BLOCK_SIZE) / BLOCK_SIZE)
+
+		for i in range(1, dist_to_wall_u+1):
+			tmp_point = Point(self.head.x, self.head.y-i*BLOCK_SIZE)
+			if tmp_point in self.body[1:] and not dir_d:
+				# BODY
+				danger_dist_u = int((self.head.y - tmp_point.y - BLOCK_SIZE) / BLOCK_SIZE)
+				print("DANGER UP : {}".format(danger_dist_u))
+				break
+			elif tmp_point.y == 0 and not dir_d:
+				# WALL
+				danger_dist_u = i
+				print("DANGER UP : {}".format(danger_dist_u))
+				break
+
+			pygame.gfxdraw.pixel(self.display, int(tmp_point.x)+10, int(tmp_point.y), GREEN)
+
+
+		# FOOD
+		if self.head.x == self.food.x:
+			if self.head.y > self.food.y:
+				dist_u = self.head.y - self.food.y - BLOCK_SIZE
+				print("DIST UP \t: {}".format(dist_u))
+				pygame.draw.line(self.display, GREEN, (self.head.x+10, self.head.y), (self.head.x+10, self.head.y-dist_u))
+			elif self.head.y < self.food.y:
+				dist_d =  self.food.y - self.head.y - BLOCK_SIZE
+				print("DIST DOWN \t: {}".format(dist_d))
+				pygame.draw.line(self.display, GREEN, (self.head.x+10, self.head.y+BLOCK_SIZE), (self.head.x+10, self.head.y+BLOCK_SIZE+dist_d))
+
+		elif self.head.y == self.food.y:
+			if self.head.x < self.food.x:
+				dist_r = self.food.x - self.head.x - BLOCK_SIZE
+				print("DIST RIGHT \t: {}".format(dist_r))
+				pygame.draw.line(self.display, GREEN, (self.head.x+BLOCK_SIZE, self.head.y+10), (self.head.x+BLOCK_SIZE+dist_r, self.head.y+10))
+			elif self.head.x > self.food.x:
+				dist_l = self.head.x - self.food.x - BLOCK_SIZE
+				print("DIST LEFT \t: {}".format(dist_l))
+				pygame.draw.line(self.display, GREEN, (self.head.x, self.head.y+10), (self.head.x-dist_l, self.head.y+10))
+
+
+		#pygame.draw.line(self.display, GREEN, (self.head.x+10, point_d), (self.head.x+10, self.h))
+
+		#pygame.draw.line(self.display, GREEN, (point_l, self.head.y+10), (0, self.head.y+10))
+		#pygame.draw.line(self.display, GREEN, (point_r, self.head.y+10), (self.w, self.head.y+10))
+
+		"""
 
 		return np.array(states, dtype=int)
 
@@ -221,11 +284,11 @@ class SnakeGame:
 		os.system("cls")
 		print("======== STATES ============ ")
 		print("-- DANGER")
-		print("STRAIGHT : {}\tRIGHT : {}\tLEFT : {}\tL.CORNER : {}\tR.CORNER :{}".format(states[0], states[1], states[2], states[3], states[4]))
+		print("STRAIGHT : {}\tRIGHT : {}\tLEFT : {}\nLF.CORNER : {}\tRF.CORNER :{}\tLD.CORNER : {}\tRD.CORNER :{}".format(states[0], states[1], states[2], states[3], states[4], states[5], states[6]))
 		print("-- DIRECTION")
-		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[5], states[6], states[7], states[8]))
+		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[7], states[8], states[9], states[10]))
 		print("-- FOOD")
-		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[9], states[10], states[11], states[12]))
+		print("LEFT : {}\tRIGHT : {}\tUP : {}\tDOWN : {}".format(states[11], states[12], states[13], states[14]))
 
 	def _update_ui(self):
 		self.display.fill(BLACK)
@@ -236,6 +299,7 @@ class SnakeGame:
 		pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
 
 		self.show_debug_states(self.get_state())
+
 
 		text = font.render("Score: " + str(self.score), True, WHITE)
 		self.display.blit(text, [0, 0])

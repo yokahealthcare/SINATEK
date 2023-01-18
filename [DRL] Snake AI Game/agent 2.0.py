@@ -24,7 +24,7 @@ class Agent:
 		self.epsilon = 0 # randomness
 		self.discount = 0.99 # discount rate
 		self.memory = deque(maxlen=MAX_MEMORY)
-		self.model = Linear_QNet(13, 256, 3)
+		self.model = Linear_QNet(15, 256, 3)
 		self.trainer = QTrainer(self.model, LR, self.discount)
 
 	def remember(self, current_state, action, reward, next_state, game_over):
@@ -49,6 +49,8 @@ class Agent:
 	def get_action(self, state):
 		# random moves: tradeoff exploration / exploitation
 		self.epsilon = 80 - self.n_games
+		if self.epsilon <= 0:
+			self.epsilon = 1 		# SETTING THE MIN. EXPLORATION VALUE
 		final_move = [0,0,0]
 		if random.randint(0, 200) < self.epsilon:
 			move = random.randint(0, 2)
