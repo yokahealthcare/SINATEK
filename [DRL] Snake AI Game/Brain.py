@@ -1,6 +1,7 @@
 import numpy as np
-import tensorflow as tf
 
+"""
+import tensorflow as tf
 class Brain:
 	def __init__(self, numInputs, numOutputs, lr=0.001):
 		self.numInputs = numInputs
@@ -16,7 +17,7 @@ class Brain:
 		model.compile(optimizer=tf.keras.optimizers.Adam(lr=self.lr), loss=tf.keras.losses.Huber(), metrics=['accuracy'])
 
 		return model
-
+"""
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -24,10 +25,10 @@ import torch.nn.functional as F
 import os
 
 class Linear_QNet(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size, hidden_size1, output_size):
         super().__init__()
-        self.linear1 = nn.Linear(input_size, hidden_size)
-        self.linear2 = nn.Linear(hidden_size, output_size)
+        self.linear1 = nn.Linear(input_size, hidden_size1)
+        self.linear2 = nn.Linear(hidden_size1, output_size)
 
     def forward(self, x):
         x = F.relu(self.linear1(x))

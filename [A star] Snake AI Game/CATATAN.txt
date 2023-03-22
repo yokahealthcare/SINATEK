@@ -1,0 +1,3 @@
+A* Algorithm
+
+select the path with the lowest estimated TOTAL COST (heuristic cost + cost to reach the current position)

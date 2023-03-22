@@ -11,7 +11,7 @@ from graph import plot
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-MAX_MEMORY = 100_000
+MAX_MEMORY = 100000
 BATCH_SIZE = 1000
 LR = 0.001
 
@@ -126,11 +126,12 @@ class Agent:
 					self.model.save()
 
 				plot_scores.append(score)
-				plot_mean_scores.append(score/self.n_games)
+				plot_mean_scores.append(sum(plot_scores)/self.n_games)
 				plot(plot_scores, plot_mean_scores)
 				env.reset()
 
 if __name__ == '__main__':
+	os.system("pause")
 	agent1 = Agent()
 	agent1.run()
 

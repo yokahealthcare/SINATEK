@@ -28,7 +28,7 @@ GREEN = (0,255,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 10
 
 class SnakeGame:
 	def __init__(self, w=400, h=400):
@@ -139,20 +139,7 @@ class SnakeGame:
 	Game Over       : -10
 	Else            : 0
 	-------------------- STATE (47 values)
-	[
-	    danger straight, danger right, danger left,
-	    danger front left corner, danger front right corner,
-	    danget back left corner, danger back right corner,
-	    
-	    direction left, direction right,
-	    direction up, direction down,
-	    	
-	    food left, food right,
-	    food up, food down,
-
-	    danger all way up (8), danger all way down(8 digits),
-	    danger all way left (8), danger all way right (8)
-	]
+	
 
 	"""
 
@@ -161,7 +148,38 @@ class SnakeGame:
 		binary = "{}{}".format((8 - len(binary))*'0', binary)
 		return list(binary)
 
+	"""
+		State Structure
+		[
+		    head_x, head_y,
+		    food_x, food_y
+		]
+
+	"""
+
 	def get_state(self):
+		states = [
+			self.head.x, self.head.y,
+			self.food.x, self.food.y,
+		]
+
+		return np.array(states, dtype=np.int)
+	"""
+		Binary State Structure
+		[
+		    danger straight, danger right, danger left,
+		    danger front left corner, danger front right corner,
+		    danget back left corner, danger back right corner,
+		    
+		    direction left, direction right,
+		    direction up, direction down,
+		    	
+		    food left, food right,
+		    food up, food down
+		]
+	"""
+
+	def get_binary_state(self):
 		coll_l = Point(self.head.x-BLOCK_SIZE, self.head.y)
 		coll_r = Point(self.head.x+BLOCK_SIZE, self.head.y)	
 		coll_u = Point(self.head.x, self.head.y-BLOCK_SIZE)
@@ -187,60 +205,6 @@ class SnakeGame:
 		danger_dist_d = None
 		danger_dist_l = None
 		danger_dist_r = None
-
-		# UP CHECKER
-		for i in range(dist_to_wall_u+1):
-			tmp_point = Point(self.head.x, self.head.y-(i+1)*BLOCK_SIZE)
-			if i <= dist_to_wall_u and tmp_point in self.body[1:] and not dir_d:
-				# body collision
-				danger_dist_u = int((self.head.y - tmp_point.y - BLOCK_SIZE) / BLOCK_SIZE)
-				break
-			elif i == dist_to_wall_u:
-				# wall collision
-				danger_dist_u = i
-
-			pygame.gfxdraw.pixel(self.display, int(tmp_point.x)+10, int(tmp_point.y), GREEN)
-
-		# DOWN CHECKER
-		for i in range(dist_to_wall_d+1):
-			tmp_point = Point(self.head.x, self.head.y+(i+1)*BLOCK_SIZE)
-			if i <= dist_to_wall_d and tmp_point in self.body[1:] and not dir_u:
-				# body collision
-				danger_dist_d = int((tmp_point.y - self.head.y - BLOCK_SIZE) / BLOCK_SIZE)
-				break
-			elif i == dist_to_wall_d:
-				# wall collision
-				danger_dist_d = i
-
-			pygame.gfxdraw.pixel(self.display, int(tmp_point.x)+10, int(tmp_point.y), GREEN)
-
-
-		# LEFT CHECKER
-		for i in range(dist_to_wall_l+1):
-			tmp_point = Point(self.head.x-(i+1)*BLOCK_SIZE, self.head.y)
-			if i <= dist_to_wall_l and tmp_point in self.body[1:] and not dir_r:
-				# body collision
-				danger_dist_l = int((self.head.x - tmp_point.x - BLOCK_SIZE) / BLOCK_SIZE)
-				break
-			elif i == dist_to_wall_l:
-				# wall collision
-				danger_dist_l = i
-
-			pygame.gfxdraw.pixel(self.display, int(tmp_point.x), int(tmp_point.y)+10, GREEN)
-
-		# RIGHT CHECKER
-		for i in range(dist_to_wall_r+1):
-			tmp_point = Point(self.head.x+(i+1)*BLOCK_SIZE, self.head.y)
-			if i <= dist_to_wall_r and tmp_point in self.body[1:] and not dir_l:
-				# body collision
-				danger_dist_r = int((tmp_point.x - self.head.x - BLOCK_SIZE) / BLOCK_SIZE)
-				break
-			elif i == dist_to_wall_r:
-				# wall collision
-				danger_dist_r = i
-
-			pygame.gfxdraw.pixel(self.display, int(tmp_point.x), int(tmp_point.y)+10, GREEN)
-
 
 		states = [
 		
@@ -298,15 +262,6 @@ class SnakeGame:
 	        self.food.y > self.head.y  # food down
 
 		]
-
-		for i in self.decimal_to_binary(danger_dist_u):
-			states.append(i)
-		for i in self.decimal_to_binary(danger_dist_d):
-			states.append(i)
-		for i in self.decimal_to_binary(danger_dist_l):
-			states.append(i)
-		for i in self.decimal_to_binary(danger_dist_r):
-			states.append(i)
 
 		return np.array(states, dtype=int)
 

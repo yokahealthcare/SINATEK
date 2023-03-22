@@ -1,4 +1,5 @@
 import pygame
+from pygame import gfxdraw
 import random
 import numpy as np
 import os
@@ -24,6 +25,7 @@ BLUE2 = (0, 100, 255)
 BLACK = (37, 37, 37)
 DARK_GREEN = (26, 77, 46)
 ORANGE = (255, 159, 41)
+GREEN = (0,255,0)
 
 # GAME CONFIGURATION
 BLOCK_SIZE = 20
@@ -43,7 +45,7 @@ class SnakeGameAI:
 		if self.isDisplayed:
 			self.display = pygame.display.set_mode((self.w, self.h))
 			pygame.display.set_caption('Snake Game AI')
-			self.SPEED = 40
+			self.SPEED = 25
 		self.clock = pygame.time.Clock()
 
 		self.reset()
@@ -95,7 +97,7 @@ class SnakeGameAI:
 			self.body.pop()
 
 		# COLLISION
-		if self._is_collision() or self.frame_iteration > (100*len(self.body)):
+		if self._is_collision() or self.frame_iteration > (200*len(self.body)):
 			gameOver = True
 			reward = -10
 			return self.get_state(), reward, gameOver, self.score
@@ -160,8 +162,7 @@ class SnakeGameAI:
 	Eat Food        : +10
 	Game Over       : -10
 	Else            : 0
-	-------------------- STATE (15 values)
-	
+	-------------------- STATE (47 values)
 	[
 	    danger straight, danger right, danger left,
 	    danger front left corner, danger front right corner,
@@ -171,11 +172,19 @@ class SnakeGameAI:
 	    direction up, direction down,
 	    	
 	    food left, food right,
-	    food up, food down
+	    food up, food down,
+
+	    danger all way up (8), danger all way down(8 digits),
+	    danger all way left (8), danger all way right (8)
 	]
 
 	"""
-	
+
+	def decimal_to_binary(self, decimal):
+		binary = bin(decimal).replace("0b", "")
+		binary = "{}{}".format((8 - len(binary))*'0', binary)
+		return list(binary)
+
 	def get_state(self):
 		coll_l = Point(self.head.x-BLOCK_SIZE, self.head.y)
 		coll_r = Point(self.head.x+BLOCK_SIZE, self.head.y)	
@@ -191,6 +200,72 @@ class SnakeGameAI:
 		dir_r = self.direction == Direction.RIGHT
 		dir_u = self.direction == Direction.UP
 		dir_d = self.direction == Direction.DOWN
+
+		"""
+		dist_to_wall_u = int(self.head.y / BLOCK_SIZE)
+		dist_to_wall_d = int((self.h-self.head.y-BLOCK_SIZE) / BLOCK_SIZE)
+		dist_to_wall_l = int(self.head.x / BLOCK_SIZE)
+		dist_to_wall_r = int((self.w-self.head.x-BLOCK_SIZE) / BLOCK_SIZE)
+
+		danger_dist_u = 0
+		danger_dist_d = 0
+		danger_dist_l = 0
+		danger_dist_r = 0
+
+		# UP CHECKER
+		for i in range(dist_to_wall_u+1):
+			tmp_point = Point(self.head.x, self.head.y-(i+1)*BLOCK_SIZE)
+			if i <= dist_to_wall_u and tmp_point in self.body[1:] and not dir_d:
+				# body collision
+				danger_dist_u = int((self.head.y - tmp_point.y - BLOCK_SIZE) / BLOCK_SIZE)
+				break
+			elif i == dist_to_wall_u:
+				# wall collision
+				danger_dist_u = i
+
+			pygame.gfxdraw.pixel(self.display, int(tmp_point.x)+10, int(tmp_point.y), GREEN)
+
+		# DOWN CHECKER
+		for i in range(dist_to_wall_d+1):
+			tmp_point = Point(self.head.x, self.head.y+(i+1)*BLOCK_SIZE)
+			if i <= dist_to_wall_d and tmp_point in self.body[1:] and not dir_u:
+				# body collision
+				danger_dist_d = int((tmp_point.y - self.head.y - BLOCK_SIZE) / BLOCK_SIZE)
+				break
+			elif i == dist_to_wall_d:
+				# wall collision
+				danger_dist_d = i
+
+			pygame.gfxdraw.pixel(self.display, int(tmp_point.x)+10, int(tmp_point.y), GREEN)
+
+
+		# LEFT CHECKER
+		for i in range(dist_to_wall_l+1):
+			tmp_point = Point(self.head.x-(i+1)*BLOCK_SIZE, self.head.y)
+			if i <= dist_to_wall_l and tmp_point in self.body[1:] and not dir_r:
+				# body collision
+				danger_dist_l = int((self.head.x - tmp_point.x - BLOCK_SIZE) / BLOCK_SIZE)
+				break
+			elif i == dist_to_wall_l:
+				# wall collision
+				danger_dist_l = i
+
+			pygame.gfxdraw.pixel(self.display, int(tmp_point.x), int(tmp_point.y)+10, GREEN)
+
+		# RIGHT CHECKER
+		for i in range(dist_to_wall_r+1):
+			tmp_point = Point(self.head.x+(i+1)*BLOCK_SIZE, self.head.y)
+			if i <= dist_to_wall_r and tmp_point in self.body[1:] and not dir_l:
+				# body collision
+				danger_dist_r = int((tmp_point.x - self.head.x - BLOCK_SIZE) / BLOCK_SIZE)
+				break
+			elif i == dist_to_wall_r:
+				# wall collision
+				danger_dist_r = i
+
+			pygame.gfxdraw.pixel(self.display, int(tmp_point.x), int(tmp_point.y)+10, GREEN)
+
+		"""
 
 		states = [
 		
@@ -258,7 +333,20 @@ class SnakeGameAI:
 		"""
 
 		# Make it numpy 2D array
-		#return np.array(np.reshape(states, (1, len(states))), dtype=int)			 
+		# return np.array(np.reshape(states, (1, len(states))), dtype=int)
+
+
+		"""			 
+
+		for i in self.decimal_to_binary(danger_dist_u):
+			states.append(i)
+		for i in self.decimal_to_binary(danger_dist_d):
+			states.append(i)
+		for i in self.decimal_to_binary(danger_dist_l):
+			states.append(i)
+		for i in self.decimal_to_binary(danger_dist_r):
+			states.append(i)
+		"""
 
 		# Make it numpy 1D array
 		return np.array(states, dtype=int)

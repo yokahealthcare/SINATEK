@@ -1,6 +1,8 @@
 import numpy as np
-import tensorflow as tf
 
+
+"""
+import tensorflow as tf
 class Dqn:
 	def __init__(self, max_memory, discount):
 		self.max_memory = max_memory
@@ -34,7 +36,7 @@ class Dqn:
 
 		return inputs, targets
 
-
+"""
 
 import torch
 import torch.nn as nn
