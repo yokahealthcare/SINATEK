@@ -1,2 +1,0 @@
-# SINATEK
- Idiot Projects
