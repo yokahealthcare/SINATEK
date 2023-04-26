@@ -1,9 +1,0 @@
-certifi @ file:///C:/b/abs_ac29jvt43w/croot/certifi_1665076682579/work/certifi
-cloudpickle==2.2.0
-gym==0.25.2
-gym-notices==0.0.8
-importlib-metadata==5.1.0
-numpy==1.21.6
-pygame==2.1.2
-wincertstore==0.2
-zipp==3.11.0
