@@ -97,7 +97,7 @@ class SnakeGameAI:
 			self.body.pop()
 
 		# COLLISION
-		if self._is_collision() or self.frame_iteration > (200*len(self.body)):
+		if self._is_collision() or self.frame_iteration > (150*len(self.body)):
 			gameOver = True
 			reward = -10
 			return self.get_state(), reward, gameOver, self.score

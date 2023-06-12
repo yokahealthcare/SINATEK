@@ -15,7 +15,7 @@ MAX_MEMORY = 100000
 BATCH_SIZE = 1000
 LR = 0.001
 
-env = SnakeGameAI(w=640, h=480, isDisplayed=True)
+env = SnakeGameAI(w=640, h=480, isDisplayed=False)
 
 class Agent:
 	def __init__(self):
@@ -116,7 +116,7 @@ class Agent:
 				self.train_long_memory()
 
 				# Showing debug data
-				self.show_debug_information(self.n_games, current_state, action, reward, next_state, game_over, score)
+				# self.show_debug_information(self.n_games, current_state, action, reward, next_state, game_over, score)
 				
 				self.n_games += 1
 				env.gen = self.n_games
@@ -125,9 +125,11 @@ class Agent:
 					record = score
 					self.model.save()
 
-				plot_scores.append(score)
-				plot_mean_scores.append(sum(plot_scores)/self.n_games)
-				plot(plot_scores, plot_mean_scores)
+				#plot_scores.append(score)
+				#plot_mean_scores.append(sum(plot_scores)/self.n_games)
+				#plot(plot_scores, plot_mean_scores)
+				if self.n_games % 100 == 0:
+					print("[Checkpoint Game {}] Score : {}".format(self.n_games, score))
 				env.reset()
 
 if __name__ == '__main__':
