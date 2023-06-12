@@ -1,5 +1,5 @@
 import torch
-from Brain import Linear_QNet
+from p_brain_pytorch import Linear_QNet
 from p_snake_ai import SnakeGameAI
 import os
 
