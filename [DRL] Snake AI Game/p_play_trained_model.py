@@ -5,7 +5,7 @@ import os
 
 model = Linear_QNet(15, 256, 3)
 
-model.load_state_dict(torch.load("C:\\Users\\User\\Documents\\SINATEK\\[DRL] Snake AI Game\\model\\model.pth"))
+model.load_state_dict(torch.load("model\\model.pth"))
 
 model.eval()
 
